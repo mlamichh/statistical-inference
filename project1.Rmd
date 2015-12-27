@@ -1,0 +1,83 @@
+---
+title: "Statistical Inference Project 1"
+author: "Madan Lamichhane"
+date: "December 27, 2015"
+output: pdf_document
+---
+
+## Project Description
+This project investigate the exponential distribution in R and compare with the central Limit Theorem. The exponential distribution has been simulated using rexp(n, lambda) where lambda is a rate paramenter which has been set to 0.2. This investigation has been performed over 40 exponentials. 
+
+## Simulation
+We can perform simulation over the 40 exponential suing fowllowing r codes.
+
+```{r}
+set.seed(1)
+lambda = 0.2
+numSim = 1000
+sampleSize = 40
+sim = matrix(rexp(numSim * sampleSize, rate=lambda), numSim, sampleSize)
+simMean = rowMeans(sim)
+```
+
+The simulation data can be plotted as
+
+
+```{r, echo=FALSE}
+hist(simMean, col="red", main="Histogram of Simulation Mean", xlab="Simulation means")
+```
+
+## Comparision of mean
+
+The sample and theoretical mean can be evaluated using following r-codes.
+
+```{r}
+meanData = mean(simMean)
+theoMean = 1/lambda
+```
+
+```{r}
+meanData
+theoMean
+```
+The mean from simulation is  4.990025 whereas the theoretical mean is 5.0.
+
+## Comparision of varaince
+
+Similarly the variance from the simulation can be compared from the theoretical variance using following codes
+
+```{r}
+simVar = var(simMean)
+theoVar = (1/lambda)^2/sampleSize
+```
+```{r}
+simVar 
+theoVar
+```
+The varainace obtained from the simulation is  0.6177072 nearly equal to theoretical varaince 0.625.
+
+## Approximating with normal distribuation
+```{r, message=FALSE}
+library(ggplot2)
+pData <- data.frame(simMean);
+a <- ggplot(pData, aes(x =simMean))
+a <- a + geom_histogram(aes(y=..density..), colour="black",
+fill = "red")
+a + geom_density(colour="green", size=1);
+```
+
+## Matching confidence interval
+```{r}
+simConInterval = round(mean(simMean) + c(-1,1)*1.96*sd(simMean)/sqrt(sampleSize), 3)
+theoConInterval = theoMean + c(-1, 1) * 1.96 * sqrt(theoVar)/sqrt(sampleSize);
+```
+
+```{r}
+simConInterval
+theoConInterval
+```
+
+```{r}
+qqnorm(simMean);
+qqline(simMean)
+```
