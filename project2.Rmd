@@ -1,0 +1,72 @@
+---
+title: "Statistical Inference project 2"
+author: "Madan Lamichhane"
+date: "December 27, 2015"
+output: pdf_document
+---
+## Project description
+The goal of the project is to analyze tooth growth using R package and study basic expoloratry data analysis.
+
+## Load Data and Data Summary 
+```{r}
+data(ToothGrowth)
+str(ToothGrowth)
+```
+
+## Visual Analysis
+
+```{r}
+library(ggplot2)
+avg <- aggregate(len~.,data=ToothGrowth,mean)
+g <- ggplot(aes(x=dose, y = len), data = ToothGrowth) + 
+geom_point(aes(color = supp)) 
+g <- g + geom_line(data=avg,aes(group=supp,colour=supp))
+print(g)
+```
+
+```{r}
+ggplot(aes(x = factor(dose), y = len), data = ToothGrowth) + 
+geom_boxplot(aes(fill = factor(dose)))
+```
+
+## Tooth length and delivary method
+
+```{r}
+ggplot(aes(x = supp, y = len), data = ToothGrowth) + 
+geom_boxplot(aes(fill = supp))
+```
+
+## Relation between delivary methods
+```{r}
+ggplot(aes(x = supp, y = len), data = ToothGrowth) +
+geom_boxplot(aes(fill = supp)) + facet_wrap(~ dose)
+```
+
+## Hypothesis testing
+
+```{r}
+dose1 <- subset(ToothGrowth, dose %in% c(0.5, 1.0))
+dose2 <- subset(ToothGrowth, dose %in% c(0.5, 2.0))
+dose3 <- subset(ToothGrowth, dose %in% c(1.0, 2.0))
+t.test(len ~ dose, paired = F, var.equal = F, data = dose1)
+```
+
+```{r}
+ t.test(len ~ dose, paired = F, var.equal = F, data = dose2)
+```
+
+```{r}
+t.test(len ~ dose, paired = F, var.equal = F, data = dose3)
+```
+
+## Supplement as a factor
+```{r}
+t.test(len ~ supp, paired = F, var.equal = F, data = ToothGrowth)
+```
+
+## Conclusion
+From this study we can conclude that the supplement type does not have effect on tooth growth and increasing dose levels leads to increased tooth growth.
+
+
+
+
